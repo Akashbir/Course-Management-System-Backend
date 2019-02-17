@@ -1,13 +1,12 @@
 package com.example.Assignment_5.services;
 
 
-<<<<<<< HEAD
 import com.example.Assignment_5.model.*;
-=======
+
 import com.example.Assignment_5.model.Course;
 import com.example.Assignment_5.model.Module;
 import com.example.Assignment_5.model.User;
->>>>>>> 44b3d282636d85f4e7b7febb612118b1090854c2
+
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -44,7 +43,7 @@ public class CourseService {
         add(cs5100);
     }};
 
-<<<<<<< HEAD
+
     static Lesson lesson1 = new Lesson(12345,"ReactLesson1");
     static Lesson lesson2 = new Lesson(23456,"ReactLesson2");
     private List<Lesson> lessons = new ArrayList<Lesson>(){{
@@ -71,8 +70,7 @@ public class CourseService {
 
 
 
-=======
->>>>>>> 44b3d282636d85f4e7b7febb612118b1090854c2
+
     @GetMapping("api/courses")
     public List <Course> findAllCourses (HttpSession session) {
         User user = (User) session.getAttribute("currentUser");
@@ -186,16 +184,16 @@ public class CourseService {
                              ){
 
         User currentUser = (User) session.getAttribute("currentUser");
-<<<<<<< HEAD
+
         for(Course c : courses){
             if(c.getId()==id){
                 courses.remove(c);
                 break;
             }
         }
-=======
+
         courses.removeIf(course -> (course.getId()==id ));
->>>>>>> 44b3d282636d85f4e7b7febb612118b1090854c2
+
 
 
     }
