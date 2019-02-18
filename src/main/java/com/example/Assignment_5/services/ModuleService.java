@@ -58,7 +58,9 @@ public class ModuleService {
                     List<Module> modules = course.getModules();
                     for(Module module:modules){
                         if(module.getId()==moduleId){
+                            System.out.println(moduleId);
                             return module;
+
                         }
                     }
                 }
@@ -88,7 +90,9 @@ public class ModuleService {
         @DeleteMapping("/api/modules/{mid}")
         public List<Module> deleteModule(@PathVariable("mid") Integer moduleId,HttpSession session){
 
-            List<Course> courses = courseService.findAllCourses(session);
+//            List<Course> courses = courseService.findAllCourses(session);
+            List<Course> courses = courseService.courses;
+            System.out.println(courses);
             if(courses!=null){
                 for(Course course:courses){
                     List<Module> modules = course.getModules();

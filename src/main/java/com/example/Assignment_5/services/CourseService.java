@@ -73,8 +73,11 @@ public class CourseService {
 
     @GetMapping("api/courses")
     public List <Course> findAllCourses (HttpSession session) {
+
         User user = (User) session.getAttribute("currentUser");
+        System.out.println("user---->"+user.getId());
         int userId = user.getId();
+
         List<Course> returnList = new ArrayList<Course>();
         for (Course course : courses) {
             if (course.getAuthorId()==userId) {
@@ -92,16 +95,18 @@ public class CourseService {
             HttpSession session
 
     ){
+
+        User currentUser = (User)session.getAttribute("currentUser");
         Random ran = new Random();
         int id = ran.nextInt();
-        User currentUser = (User)session.getAttribute("currentUser");
-
         course.setId(id);
         for (Course c : courses) {
             if (c.getId()==course.getId()) {
                 return null;
             }
         }
+//        System.out.println(currentUser.getId());
+        course.setAuthorId(currentUser.getId());
         courses.add(course);
         return course;
     }
@@ -144,7 +149,7 @@ public class CourseService {
 
     @GetMapping("/api/courses/{cid}")
     public Course findCourseById(
-            @PathVariable("cid") Integer id,
+            @PathVariable("cid") int id,
             HttpSession session
 
     ) {

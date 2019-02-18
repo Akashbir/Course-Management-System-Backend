@@ -43,7 +43,9 @@ public class LessonService {
     @GetMapping("/api/module/{mid}/lesson")
     public List<Lesson> findAllLessons(@PathVariable("mid") int moduleId, HttpSession session) {
 
-        List<Course> courses = courseService.findAllCourses(session);
+//        List<Course> courses = courseService.findAllCourses(session);
+
+        List<Course> courses = courseService.courses;
 
         for (Course course : courses) {
             List<Module> modules = course.getModules();
@@ -99,7 +101,8 @@ public class LessonService {
 
     @DeleteMapping("/api/lesson/{lid}")
     public List<Lesson> deleteLesson(@PathVariable("lid") int lessonId, HttpSession session) {
-        List<Course> courses = courseService.findAllCourses(session);
+//        List<Course> courses = courseService.findAllCourses(session);
+        List<Course> courses = courseService.courses;
         if (courses != null) {
             for (Course course : courses) {
                 List<Module> modules = course.getModules();
