@@ -18,7 +18,7 @@ public class TopicService {
     private CourseService courseService = new CourseService();
 
     @PostMapping("/api/lesson/{lid}/topic")
-    public List<Topic> createTopic(@PathVariable("mid") int topicId, @RequestBody Topic topic,
+    public List<Topic> createTopic(@PathVariable("lid") int lessonId, @RequestBody Topic topic,
                                    HttpSession session) {
 
         List<Course> courses = courseService.findAllCourses(session);
@@ -28,11 +28,13 @@ public class TopicService {
                 for (Module module : modules) {
                     List<Lesson> lessons = module.getLessons();
                     for(Lesson lesson: lessons){
-                        List<Topic> topics = lesson.getTopics();
-                        Random r = new Random();
-                        topic.setId(r.nextInt(Integer.MAX_VALUE));
-                        topics.add(topic);
-                        return topics;
+                        if(lesson.getId()==lessonId) {
+                            List<Topic> topics = lesson.getTopics();
+                            Random r = new Random();
+                            topic.setId(r.nextInt(Integer.MAX_VALUE));
+                            topics.add(topic);
+                            return topics;
+                        }
                     }
                 }
             }
@@ -44,7 +46,8 @@ public class TopicService {
     @GetMapping("/api/lesson/{lid}/topic")
     public List<Topic> findAllTopics(@PathVariable("lid") int lessonId, HttpSession session) {
 
-        List<Course> courses = courseService.findAllCourses(session);
+//        List<Course> courses = courseService.findAllCourses(session);
+        List<Course> courses = courseService.courses;
 
         for (Course course : courses) {
             List<Module> modules = course.getModules();
@@ -110,7 +113,8 @@ public class TopicService {
 
     @DeleteMapping("/api/topic/{tid}")
     public List<Topic> deleteTopic(@PathVariable("tid") int topicId, HttpSession session) {
-        List<Course> courses = courseService.findAllCourses(session);
+//        List<Course> courses = courseService.findAllCourses(session);
+        List<Course> courses = courseService.courses;
         if (courses != null) {
             for (Course course : courses) {
                 List<Module> modules = course.getModules();
