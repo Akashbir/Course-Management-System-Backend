@@ -10,6 +10,8 @@ import java.util.Random;
 
 import com.example.Assignment_5.model.Course;
 import com.example.Assignment_5.model.User;
+import com.example.Assignment_5.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -35,19 +37,23 @@ public class UserService{
 //        add(cs4500);
 //    }};
 
-    User alice = new User( 123, "alice","alice", "Alice","Wonderland", "Faculty","+18374765412","alice@gmail.com");
-    User bob = new User( 234, "bob", "bob", "Bob","Marley", "Student","+1615251522","bob@gmail.com");
+    @Autowired
+    UserRepository userRepository;
 
-    List<User> users = new ArrayList<User>() {{
-        add(alice);
-        add(bob);
-    }};
+//    User alice = new User( 123, "alice","alice", "Alice","Wonderland", "Faculty","+18374765412","alice@gmail.com");
+//    User bob = new User( 234, "bob", "bob", "Bob","Marley", "Student","+1615251522","bob@gmail.com");
+
+    List<User> users = new ArrayList<User>();
+//        add(alice);
+//        add(bob);
+//    }};
 
 
     @PostMapping("/api/login")
     public User login(
             @RequestBody User loginUser, HttpSession session
     ){
+        List<User> users = (List<User>) userRepository.findAll();
         for(User user: users){
             if(user.getUsername().equals(loginUser.getUsername()) &&
                     user.getPassword().equals(loginUser.getPassword())){
@@ -56,28 +62,47 @@ public class UserService{
                 return user;
             }
         }
-        return null;
+        User newUser = new User();
+        return newUser;
     }
 
 
     @PostMapping(path="/api/register",consumes="application/json",produces="application/json")
     public User register(
-            @RequestBody User user, HttpSession session){
+            @RequestBody User newUser, HttpSession session){
 
-        Random ran = new Random();
-        Integer id = ran.nextInt();
-//        user.setId((long) Math.random());
-        session.setAttribute("currentUser", user);
-        user.setId(id);
-        users.add(user);
-        return user;
+//        Random ran = new Random();
+//        Integer id = ran.nextInt();
+
+        for(User user : users){
+            if(user.getUsername() == newUser.getUsername()){
+                newUser.setUsername("");
+                return newUser;
+            }
+
+        }
+
+        if(newUser!=null){
+            userRepository.save(newUser);
+        }
+        else {
+            return null;
+        }
+
+        session.setAttribute("currentUser", newUser);
+        return newUser;
+
     }
 
 
 
     @GetMapping("/api/profile")
     public User profile(HttpSession session){
-        return (User)session.getAttribute("currentUser");
+
+        User loggedInUser =  (User)session.getAttribute("currentUser");
+        loggedInUser = userRepository.findById(loggedInUser.getId()).get();
+        return loggedInUser;
+
     }
 
 
@@ -92,18 +117,13 @@ public class UserService{
     @GetMapping("/api/user")
     public List<User> findAllUsers() {
 
-        return users;
+        return (List<User>) userRepository.findAll();
     }
 
     @GetMapping("/api/user/{userId}")
     public User findUserById(
             @PathVariable("userId") int id) {
-        for(User user: users) {
-            if(id==user.getId()) {
-                return user;
-            }
-        }
-        return null;
+        return userRepository.findById(id).get();
     }
 
     @PostMapping(path="/api/user/createUser",consumes="application/json",produces="application/json")
@@ -127,40 +147,50 @@ public class UserService{
 
     @DeleteMapping("/api/user/deleteUser/{userId}")
     public void deleteUser(
-            @PathVariable("userId") Long id) {
-        //	System.out.println(id);
-        for(User u: users) {
-            //	System.out.println(u.getId());
-            if(u.getId()==id) {
-                users.remove(u);
-            }
-        }
+            @PathVariable("userId") int id) {
+       userRepository.deleteById(id);
 
     }
 
-    @PutMapping(path="api/user/updateUser/{userId}",consumes="application/json",produces="application/json")
+
+
+    @PutMapping(path="/api/user/updateUser/{userId}",consumes="application/json",produces="application/json")
     public User updateUser(
-            @PathVariable("userId") Long id, @RequestBody User user) {
+            @PathVariable("userId") int id, @RequestBody User newUser) {
 
-        for(User u: users) {
-            if(id == u.getId()) {
-                u.setId(user.getId());
-                u.setFirstName(user.getFirstName());
-                u.setLastName(user.getLastName());
-                u.setPassword(user.getPassword());
-                u.setUsername(user.getUsername());
-                u.setRole(user.getRole());
-                u.setEmail(user.getEmail());
-                u.setPhoneNumber(user.getPhoneNumber());
 
-                return u;
-            }
 
-        }
-        return null;
 
-    }
+        User user = userRepository.findById(id).get();
+        user.setFirstName(newUser.getFirstName());
+        user.setLastName(newUser.getLastName());
+        user.setPassword(newUser.getPassword());
+        user.setUsername(newUser.getUsername());
+        user.setRole(newUser.getRole());
+        user.setEmail(newUser.getEmail());
+        user.setPhoneNumber(newUser.getPhoneNumber());
+        return userRepository.save(user);
+//        for(User u: users) {
+//            if(id == u.getId()) {
+//                u.setId(user.getId());
+//                u.setFirstName(user.getFirstName());
+//                u.setLastName(user.getLastName());
+//                u.setPassword(user.getPassword());
+//                u.setUsername(user.getUsername());
+//                u.setRole(user.getRole());
+//                u.setEmail(user.getEmail());
+//                u.setPhoneNumber(user.getPhoneNumber());
+//                userRepository.save(u);
+//                return u;
+//
+//            }
+//
+//        }
+//        return null;
 
+//        User user = userRepository.findById(id).get();
+//        user.set(newUser);
+//        return userRepository.save(user);}
 
 
 //	@GetMapping(path="api/user/findUserBy/{query}")
@@ -175,6 +205,7 @@ public class UserService{
 //
 //
 //	}
+    }
 
     @GetMapping("/api/user/query")
     public List<User> searchUser(

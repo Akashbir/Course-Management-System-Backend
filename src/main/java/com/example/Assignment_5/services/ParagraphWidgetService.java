@@ -1,10 +1,9 @@
 package com.example.Assignment_5.services;
 
-import com.example.Assignment_5.model.ListWidget;
+
 import com.example.Assignment_5.model.ParagraphWidget;
 import com.example.Assignment_5.model.Topic;
 import com.example.Assignment_5.model.Widget;
-import com.example.Assignment_5.repositories.ListWidgetRepository;
 import com.example.Assignment_5.repositories.ParagraphWidgetRepository;
 import com.example.Assignment_5.repositories.TopicRepository;
 import com.example.Assignment_5.repositories.WidgetRepository;
@@ -16,19 +15,19 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*")
-public class ListWidgetService {
+public class ParagraphWidgetService {
 
     @Autowired
     WidgetRepository widgetRepository;
 
     @Autowired
-    ListWidgetRepository listWidgetRepository;
+    ParagraphWidgetRepository paragraphWidgetRepository;
 
     @Autowired
     TopicRepository topicRepository;
 
-    @GetMapping("/api/topic/{tid}/list/widget")
-    public List<Widget> createWidget(@PathVariable("tid") int topicId, @RequestBody ListWidget newWidget, HttpSession session){
+    @GetMapping("/api/topic/{tid}/paragraph/widget")
+    public List<Widget> createWidget(@PathVariable("tid") int topicId, @RequestBody ParagraphWidget newWidget, HttpSession session){
         Topic topic = topicRepository.findById(topicId).get();
         newWidget.setTopic(topic);
         widgetRepository.save(newWidget);
@@ -36,19 +35,19 @@ public class ListWidgetService {
 
     }
 
-    @GetMapping("/api/list/widget/{wid}")
+    @GetMapping("/api/paragraph/widget/{wid}")
     public Widget findWidgetById(@PathVariable("wid") int widgetId, HttpSession session){
 
-        ListWidget widget = listWidgetRepository.findById(widgetId).get();
+        ParagraphWidget widget = paragraphWidgetRepository.findById(widgetId).get();
         return widget;
 
     }
 
-    @PutMapping("/api/list/widget/{wid}")
-    public Widget updateWidget(@PathVariable("wid") int widgetId, @RequestBody ListWidget updatedWidget){
-        ListWidget widget = listWidgetRepository.findById(widgetId).get();
-     //   widget.setText(updatedWidget.getText());
-//        return paragraphWidgetRepository.save(widget);
-        return widgetRepository.save(widget);
+    @PutMapping("/api/paragraph/widget/{wid}")
+    public Widget updateWidget(@PathVariable("wid") int widgetId, @RequestBody ParagraphWidget updatedWidget){
+        ParagraphWidget widget = paragraphWidgetRepository.findById(widgetId).get();
+        widget.setText(updatedWidget.getText());
+        return paragraphWidgetRepository.save(widget);
     }
+
 }

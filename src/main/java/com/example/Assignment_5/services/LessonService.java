@@ -3,6 +3,9 @@ package com.example.Assignment_5.services;
 import com.example.Assignment_5.model.Course;
 import com.example.Assignment_5.model.Lesson;
 import com.example.Assignment_5.model.Module;
+import com.example.Assignment_5.repositories.LessonRepository;
+import com.example.Assignment_5.repositories.ModuleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -14,109 +17,49 @@ import java.util.Random;
 @CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*")
 public class LessonService {
 
-    private CourseService courseService = new CourseService();
+
+    @Autowired
+    ModuleRepository moduleRepository;
+
+    @Autowired
+    LessonRepository lessonRepository;
 
     @PostMapping("/api/module/{mid}/lesson")
-    public List<Lesson> createLesson(@PathVariable("mid") int moduleId, @RequestBody Lesson lesson,
+    public List<Lesson> createLesson(@PathVariable("mid") int moduleId, @RequestBody Lesson newLesson,
                                      HttpSession session) {
 
-        List<Course> courses = courseService.findAllCourses(session);
-        if (courses != null) {
-            for (Course course : courses) {
-                List<Module> modules = course.getModules();
-                for (Module module : modules) {
-                    if (module.getId()==moduleId) {
-                        List<Lesson> lessons = module.getLessons();
-                        Random r = new Random();
-                        lesson.setId(r.nextInt(Integer.MAX_VALUE));
-                        lesson.setTopics(new ArrayList<>());
-                        lessons.add(lesson);
-                        return lessons;
-                    }
-                }
-            }
-        }
-        return null;
+        Module module = moduleRepository.findById(moduleId).get();
+        newLesson.setModule(module);
+        lessonRepository.save(newLesson);
+        return module.getLessons();
 
     }
 
     @GetMapping("/api/module/{mid}/lesson")
     public List<Lesson> findAllLessons(@PathVariable("mid") int moduleId, HttpSession session) {
-
-//        List<Course> courses = courseService.findAllCourses(session);
-
-        List<Course> courses = courseService.courses;
-
-        for (Course course : courses) {
-            List<Module> modules = course.getModules();
-            for (Module module : modules) {
-                if (module.getId()==moduleId) {
-                    return module.getLessons();
-                }
-            }
-        }
-        return null;
+        Module module = moduleRepository.findById(moduleId).get();
+        return module.getLessons();
     }
 
     @GetMapping("/api/lesson/{lid}")
     public Lesson findLessonById(@PathVariable("lid") int lessonId, HttpSession session) {
 
-        List<Course> courses = courseService.findAllCourses(session);
-        if (courses != null) {
-            for (Course course : courses) {
-                List<Module> modules = course.getModules();
-                for (Module module : modules) {
-                    for (Lesson lesson : module.getLessons()) {
-                        if (lesson.getId()==lessonId) {
-                            return lesson;
-                        }
-                    }
-                }
-            }
-        }
-        return null;
+        Lesson lesson = lessonRepository.findById(lessonId).get();
+        return lesson;
     }
 
     @PutMapping("/api/lesson/{lid}")
     public Lesson updateLesson(@PathVariable("lid") int lessonId, @RequestBody Lesson updatedLesson,
                                HttpSession session) {
 
-        List<Course> courses = courseService.findAllCourses(session);
-        if (courses != null) {
-            for (Course course : courses) {
-                List<Module> modules = course.getModules();
-                for (Module module : modules) {
-                    List<Lesson> lessons = module.getLessons();
-                    for (int i = 0; i < lessons.size(); i++) {
-                        if (lessons.get(i).getId()==updatedLesson.getId()) {
-                            lessons.set(i, updatedLesson);
-                            return lessons.get(i);
-                        }
-                    }
-                }
-            }
-        }
-        return null;
+        Lesson lesson = lessonRepository.findById(lessonId).get();
+        lesson.setTitle(updatedLesson.getTitle());
+        return lessonRepository.save(lesson);
     }
 
     @DeleteMapping("/api/lesson/{lid}")
-    public List<Lesson> deleteLesson(@PathVariable("lid") int lessonId, HttpSession session) {
-//        List<Course> courses = courseService.findAllCourses(session);
-        List<Course> courses = courseService.courses;
-        if (courses != null) {
-            for (Course course : courses) {
-                List<Module> modules = course.getModules();
-                for (Module module : modules) {
-                    List<Lesson> lessons = module.getLessons();
-                    for (int i = 0; i < lessons.size(); i++) {
-                        if (lessons.get(i).getId()==lessonId) {
-                            lessons.remove(i);
-                            return lessons;
-                        }
-                    }
-                }
-            }
-        }
-        return null;
+    public void deleteLesson(@PathVariable("lid") int lessonId, HttpSession session) {
+            lessonRepository.deleteById(lessonId);
+
     }
 }
