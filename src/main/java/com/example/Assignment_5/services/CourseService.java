@@ -9,6 +9,7 @@ import com.example.Assignment_5.model.User;
 
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Entity;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
@@ -75,7 +76,7 @@ public class CourseService {
     public List <Course> findAllCourses (HttpSession session) {
 
         User user = (User) session.getAttribute("currentUser");
-        System.out.println("user---->"+user.getId());
+//        System.out.println("user---->"+user.getId());
         int userId = user.getId();
 
         List<Course> returnList = new ArrayList<Course>();
