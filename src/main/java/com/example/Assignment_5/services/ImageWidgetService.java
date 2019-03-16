@@ -27,7 +27,7 @@ public class ImageWidgetService {
     @Autowired
     TopicRepository topicRepository;
 
-    @GetMapping("/api/topic/{tid}/image/widget")
+    @PostMapping("/api/topic/{tid}/image/widget")
     public List<Widget> createWidget(@PathVariable("tid") int topicId, @RequestBody ImageWidget newWidget, HttpSession session){
         Topic topic = topicRepository.findById(topicId).get();
         newWidget.setTopic(topic);

@@ -27,7 +27,7 @@ public class ListWidgetService {
     @Autowired
     TopicRepository topicRepository;
 
-    @GetMapping("/api/topic/{tid}/list/widget")
+    @PostMapping("/api/topic/{tid}/list/widget")
     public List<Widget> createWidget(@PathVariable("tid") int topicId, @RequestBody ListWidget newWidget, HttpSession session){
         Topic topic = topicRepository.findById(topicId).get();
         newWidget.setTopic(topic);

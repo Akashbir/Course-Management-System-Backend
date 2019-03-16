@@ -11,16 +11,19 @@ public class Widget {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
     private String title;
-    private String wtype;
+    private String type;
+
+    protected int widgetOrder;
 
     @ManyToOne
     @JsonIgnore
     private Topic topic;
 
-    public Widget(int id,  String title, String wtype) {
+    public Widget(int id,  String title, String type, int widgetOrder) {
         this.id = id;
         this.title = title;
-        this.wtype = wtype;
+        this.type = type;
+        this.widgetOrder = widgetOrder;
     }
     
     public Widget() {}
@@ -41,12 +44,12 @@ public class Widget {
         this.title = title;
     }
 
-    public String getWtype() {
-        return wtype;
+    public String getType() {
+        return type;
     }
 
-    public void setWtype(String wtype) {
-        this.wtype = wtype;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Topic getTopic() {
@@ -55,5 +58,13 @@ public class Widget {
 
     public void setTopic(Topic topic) {
         this.topic = topic;
+    }
+
+    public int getWidgetOrder() {
+        return widgetOrder;
+    }
+
+    public void setWidgetOrder(int widgetOrder) {
+        this.widgetOrder = widgetOrder;
     }
 }

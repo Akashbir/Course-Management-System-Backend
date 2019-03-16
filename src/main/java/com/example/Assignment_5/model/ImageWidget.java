@@ -11,8 +11,8 @@ public class ImageWidget extends Widget {
     private String src;
 
 
-    public ImageWidget(int id,  String title, String wtype, String src) {
-        super(id,  title, wtype);
+    public ImageWidget(int id, String title, String type, int widgetOrder, String src) {
+        super(id, title, type, widgetOrder);
         this.src = src;
     }
 

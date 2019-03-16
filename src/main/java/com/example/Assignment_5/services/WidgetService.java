@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,11 +44,22 @@ public class WidgetService {
 
     }
 
+    @PostMapping("/api/topic/{tid}/saveWidget")
+    public List<Widget> saveWidgets(@PathVariable("tid") int topicId, @RequestBody List<Widget> widgets){
+        Topic topic = topicRepository.findById(topicId).get();
+        List<Widget> savedWidgets =  topic.getWidgets();
+        widgetRepository.deleteAll();
+        for(Widget widget: widgets){
+            savedWidgets.add(widgetRepository.save(widget));
+        }
+        return savedWidgets;
+    }
+
     @PutMapping("/api/widget/{wid}")
     public Widget updateWidget(@PathVariable("wid") int widgetId, @RequestBody Widget updatedWidget, HttpSession session){
         Widget widget = widgetRepository.findById(widgetId).get();
         widget.setTitle(updatedWidget.getTitle());
-        widget.setWtype(updatedWidget.getWtype());
+        widget.setType(updatedWidget.getType());
         return widgetRepository.save(widget);
     }
 

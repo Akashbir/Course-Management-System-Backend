@@ -26,12 +26,11 @@ public class ParagraphWidgetService {
     @Autowired
     TopicRepository topicRepository;
 
-    @GetMapping("/api/topic/{tid}/paragraph/widget")
-    public List<Widget> createWidget(@PathVariable("tid") int topicId, @RequestBody ParagraphWidget newWidget, HttpSession session){
+    @PostMapping("/api/topic/{tid}/paragraph/widget")
+    public Widget createWidget(@PathVariable("tid") int topicId, @RequestBody ParagraphWidget newWidget, HttpSession session){
         Topic topic = topicRepository.findById(topicId).get();
         newWidget.setTopic(topic);
-        widgetRepository.save(newWidget);
-        return topic.getWidgets();
+        return widgetRepository.save(newWidget);
 
     }
 

@@ -10,9 +10,8 @@ public class ParagraphWidget extends Widget {
     private String text;
 
 
-
-    public ParagraphWidget(int id, String title, String wtype, String text) {
-        super(id,  title, wtype);
+    public ParagraphWidget(int id, String title, String type, int widgetOrder, String text) {
+        super(id, title, type, widgetOrder);
         this.text = text;
     }
 

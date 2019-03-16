@@ -12,14 +12,13 @@ public class ListWidget extends Widget {
     private boolean ordered;
 
 
-
-    public ListWidget(int id, String title, String wtype, boolean ordered, String  items) {
-        super(id,  title, wtype);
-        this.ordered = ordered;
+    public ListWidget(int id, String title, String type, int widgetOrder, String items, boolean ordered) {
+        super(id, title, type, widgetOrder);
         this.items = items;
+        this.ordered = ordered;
     }
 
-   public ListWidget(){}
+    public ListWidget(){}
 
     public String getItems() {
         return items;
